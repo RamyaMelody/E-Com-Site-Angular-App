@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Guvi</title>
+    <style>
+        .cont {
+            background-color: #a7dff0;
+            padding: 9px;
+        }
+
+
+        .signupbtn {
+            background-color: #4967e6;
+            color: white;
+            padding: 14px 6px;
+            margin: 0px 0px 15px 272px;
+            border: none;
+            cursor: pointer;
+            width: 33%;
+            border-radius: 6px;
+        }
+
+        .updatebtn {
+            background-color: #38e03d;
+            color: white;
+            padding: 14px 6px;
+            margin: 0px 0px 15px 272px;
+            border: none;
+            cursor: pointer;
+            width: 16%;
+            border-radius: 6px;
+        }
+
+        .deletebtn {
+            background-color: #e02323;
+            color: white;
+            padding: 14px 6px;
+            margin: 0px 0px 15px 12px;
+            border: none;
+            cursor: pointer;
+            width: 15%;
+            border-radius: 6px;
+        }
+
+        h2 {
+            text-align: center;
+            color: brown
+        }
+
+        .name {
+            width: 30%;
+            padding: 11px 9px;
+            margin: 0px 0px 15px 272px;
+            border-radius: 4px;
+            border: 1px;
+        }
+
+        form {
+            padding: 279px;
+            margin: -224px 0px 0px 0px;
+        }
+    </style>
+    <script>
+        function sendData() {
+            var data = {
+                category: document.getElementById("category").value,
+                prodName: document.getElementById("prodName").value,
+                price: document.getElementById("price").value,
+                description: document.getElementById("desc").value,
+                quantity: document.getElementById("qty").value
+
+            };
+            fetch("http://localhost:3000/category", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }).then(function (data) {
+                console.log(data.json())
+            })
+        }
+
+        
+
+        function view() {
+            alert()
+            fetch("http://localhost:3000/view", {
+                method: "GET",
+                headers: { 'Content-Type': 'application/json' },
+            }).then(async function (data) {
+                //console.log(data.json())
+                var result = await data.json();
+                console.log(result);
+                for (i = 0; i < result.length; i++) {
+                    var obj_id = result[i]._id;
+                    localStorage.setItem('obj_id', obj_id);
+                }
+            })
+        }
+
+        function updateData() {         
+         var id  = localStorage.getItem("obj_id");  
+         var data = {
+                category: document.getElementById("category").value,
+                prodName: document.getElementById("prodName").value,
+                price: document.getElementById("price").value,
+                description: document.getElementById("desc").value,
+                quantity: document.getElementById("qty").value
+
+            };          
+         fetch("http://localhost:3000/update/" + id, {
+             method: 'put',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(data)
+         }).then(function (data) {
+             console.log(data.json())
+         })
+     }
+
+     function deleteData() {
+         var data = {
+             category: document.getElementById("category").value
+         };
+         fetch("http://localhost:3000/delete", {
+             method: 'delete',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(data)
+         }).then(function (data) {
+             console.log(data.json())
+         })
+     }
+
+    </script>
+
+</head>
+
+<body>
+    <form>
+        <div class="cont">
+
+            <h2>My Form</h2>
+            <input type="text" class="name" id="category" placeholder="Category" name="category"><br>
+            <input type="text" class="name" id="prodName" placeholder="Product Name" name="prodName"><br>
+            <input type="text" class="name" id="price" placeholder="Product Price" name="price"><br>
+            <input type="text" class="name" id="desc" placeholder="Description" name="desc"><br>
+            <input type="text" class="name" id="qty" placeholder="Quantity" name="qty"><br>
+
+
+
+            <div>
+
+                <input type="submit" value="Submit" class="signupbtn" onclick="sendData();return false;">
+                <input type="submit" id="update" value="Update" class="updatebtn" onclick="updateData();return false;">
+                <input type="submit" id="delete" value="Delete" class="deletebtn" onclick="deleteData();return false;">
+                <input type="submit" value="View Cart" class="updatebtn" onclick="view(); return false;">
+            </div>
+        </div>
+    </form>
+
+</body>
+
+</html>
